@@ -1,5 +1,6 @@
-# Data folder due to institutional privacy
+# Data folder and Tableau dashboard due to institutional privacy
 data/
+dashboards/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
