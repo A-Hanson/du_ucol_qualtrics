@@ -1,4 +1,6 @@
 import pandas as pd
+from collections import defaultdict
+import pprint
 
 if __name__ == "__main__":
     df = pd.read_excel("../data/202110_1st_audit_C_A_Results.xlsx")
@@ -68,9 +70,35 @@ if __name__ == "__main__":
         output: Under each course, there is a list of tasks that needs intervention 
         """
         pass
-    for k,v in lx_iloc.items():
-        if df.iloc[:, k] == "No":
-            lst = []
-            lst.append(df['Course Title'])
-        print(v, lst)
+    # for k,v in lx_iloc.items():
+    #     if df.iloc[:, k] == "No":
+    #         lst = []
+    #         lst.append(df['Course Title'])
+    #     print(v, lst)
+    def get_to_do_list(df):
+        df = df.copy()
+        course_dict = defaultdict(list)
+        for index, row in df.iterrows():
+            name = row['Course Title']
+            for i in range(df.shape[1]):
+                if row[i] == "No" or row[i] == "Not sure":
+                    course_dict[name].append(i)
+        return course_dict
+    
+    def course_list_with_tasks(dictionary):
+        """
+        input: dictionary. keys are course titles, values are columns with 'no' responses.
+        output: Under each course, there is a list of tasks that needs intervention 
+        """
+        #for k,v in lx_iloc.items():
+        lx_to_do_lst = {key: lx_iloc.get(key, dictionary[key]) for key in dictionary}
+        #for k,v in ac_dir_iloc.items():
+        ### BECAUSE THIS CHANGES IN-PLACE
+        ac_dir_to_do_lst = {key: ac_dir_iloc.get(key, dictionary[key]) for key in dictionary}
+        return lx_to_do_lst, ac_dir_to_do_lst
+    #print(to_do_list)
+    to_do_list = get_to_do_list(df)
+    lx_lst, ac_dir_lst = course_list_with_tasks(to_do_list)
+    pprint.pprint(ac_dir_lst)
+    
     # Association Dean
